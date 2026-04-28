@@ -1,5 +1,7 @@
 
-const API = 'http://127.0.0.1:5000/api';
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://127.0.0.1:5000/api'
+  : `http://${window.location.hostname}:5000/api`;
 let currentUser = null;
 let pendingTxn = null;
 let pinBuffer = '';
