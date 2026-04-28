@@ -20,9 +20,15 @@ const BOT_RESPONSES = {
 };
 
 const ANSWERS = {
-  greet: () => `👋 Hi ${currentUser ? currentUser.name.split(' ')[0] : 'there'}! I'm TrustBot 🤖\n\nHow can I help you today?\n\n• 💰 Check balance\n• 💸 Send money\n• 📷 Scan QR\n• 🔒 Change PIN\n• 📊 View history`,
+  greet: () => {
+    const name = (typeof currentUser !== 'undefined' && currentUser) ? currentUser.name.split(' ')[0] : 'there';
+    return `👋 Hi ${name}! I'm TrustBot 🤖\n\nHow can I help you today?\n\n• 💰 Check balance\n• 💸 Send money\n• 📷 Scan QR\n• 🔒 Change PIN\n• 📊 View history`;
+  },
 
-  balance: () => `💰 Your current balance is <strong>${currentUser ? '₹' + Number(currentUser.balance).toLocaleString('en-IN') : 'N/A'}</strong>\n\nYou can see it on the Home screen. Tap the 👁 icon to show/hide it.`,
+  balance: () => {
+    const bal = (typeof currentUser !== 'undefined' && currentUser) ? '₹' + Number(currentUser.balance).toLocaleString('en-IN') : 'N/A';
+    return `💰 Your current balance is <strong>${bal}</strong>\n\nYou can see it on the Home screen. Tap the 👁 icon to show/hide it.`;
+  },
 
   send: () => `💸 To send money:\n1. Tap <strong>Send Money</strong> on Home\n2. Enter UPI ID (e.g. friend@upi)\n3. Enter amount\n4. TrustGuard will check for fraud\n5. Enter your PIN to confirm\n\n⚡ Tip: Tap a contact from the People section for quick pay!`,
 
@@ -54,15 +60,14 @@ const ANSWERS = {
 let chatOpen = false;
 
 function initChatbot() {
-  // Add chatbot button + window to DOM
+  // Don't add twice
+  if (document.getElementById('chat-btn')) return;
+
   const chatHTML = `
-    <!-- Chat Button -->
-    <button id="chat-btn" onclick="toggleChat()" title="Help & Support">
+    <button id="chat-btn" onclick="toggleChat()" title="Help & Support" style="display:none">
       <span id="chat-btn-icon">💬</span>
       <span class="chat-badge hidden" id="chat-badge">1</span>
     </button>
-
-    <!-- Chat Window -->
     <div id="chat-window" class="chat-window hidden">
       <div class="chat-header">
         <div class="chat-header-left">
@@ -91,15 +96,22 @@ function initChatbot() {
         </div>
       </div>
       <div class="chat-input-wrap">
-        <input type="text" id="chat-input" placeholder="Type a message..." 
+        <input type="text" id="chat-input" placeholder="Type a message..."
           onkeydown="if(event.key==='Enter') sendChat()"/>
         <button onclick="sendChat()" class="chat-send-btn">➤</button>
       </div>
     </div>`;
 
   const div = document.createElement('div');
+  div.id = 'chatbot-root';
   div.innerHTML = chatHTML;
   document.body.appendChild(div);
+}
+
+// Called from launchApp() after login
+function showChatBtn() {
+  const btn = document.getElementById('chat-btn');
+  if (btn) btn.style.display = 'flex';
 }
 
 function toggleChat() {
@@ -198,7 +210,7 @@ function escapeHTML(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// Init when DOM ready
+// Init chatbot DOM on page load (button hidden until login)
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initChatbot);
 } else {

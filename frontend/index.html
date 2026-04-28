@@ -7,7 +7,7 @@
 
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json"/>
-  <meta name="theme-color" content="#00d4ff"/>
+  <meta name="theme-color" content="#000000"/>
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -31,18 +31,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/pages.css"/>
-  <link rel="stylesheet" href="css/glass.css"/>
-  <link rel="stylesheet" href="css/bw_theme.css"/>
-  <link rel="stylesheet" href="css/theme.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
 <!-- Hexagon Particle Canvas -->
 <canvas id="hex-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
-
-<!-- Theme Toggle Button -->
-<button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">🎨</button>
 
 <!-- ══════════════════════════════════════════════════════════
      SCREEN: LOGIN
@@ -313,23 +307,7 @@
 <script src="js/dashboard.js"></script>
 <script src="js/app.js"></script>
 <script>
-// ── Theme Toggle ─────────────────────────────────────────────
-function toggleTheme() {
-  const bw = document.body.classList.toggle('theme-bw');
-  const btn = document.getElementById('theme-toggle');
-  btn.textContent = bw ? '🌈' : '🎨';
-  localStorage.setItem('trustpay-theme', bw ? 'bw' : 'cyber');
-}
-// Restore saved theme
-(function() {
-  if (localStorage.getItem('trustpay-theme') === 'bw') {
-    document.body.classList.add('theme-bw');
-    const btn = document.getElementById('theme-toggle');
-    if (btn) btn.textContent = '🌈';
-  }
-})();
-<script>
-// ── Service Worker Registration ───────────────────────────────────────────────
+// ── Service Worker ────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
@@ -338,40 +316,30 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// ── PWA Install Prompt ────────────────────────────────────────────────────────
+// ── PWA Install Prompt ────────────────────────────────────────
 let deferredPrompt = null;
-
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredPrompt = e;
-  // Show banner after 3 seconds
   setTimeout(() => {
     const banner = document.getElementById('install-banner');
-    if (banner && !localStorage.getItem('install-dismissed')) {
-      banner.classList.remove('hidden');
-    }
+    if (banner && !localStorage.getItem('install-dismissed')) banner.classList.remove('hidden');
   }, 3000);
 });
-
 function installApp() {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
   deferredPrompt.userChoice.then(choice => {
-    if (choice.outcome === 'accepted') {
-      document.getElementById('install-banner').classList.add('hidden');
-    }
+    if (choice.outcome === 'accepted') document.getElementById('install-banner').classList.add('hidden');
     deferredPrompt = null;
   });
 }
-
 function dismissInstall() {
   document.getElementById('install-banner').classList.add('hidden');
   localStorage.setItem('install-dismissed', '1');
 }
-
 window.addEventListener('appinstalled', () => {
   document.getElementById('install-banner').classList.add('hidden');
-  console.log('[TrustPay] App installed!');
 });
 </script>
 </body>

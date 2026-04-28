@@ -77,6 +77,8 @@ function launchApp() {
   document.getElementById('app-shell').style.display = 'flex';
   startClock();
   navTo('home');
+  // Show chatbot button after login
+  if (typeof showChatBtn === 'function') showChatBtn();
 }
 
 function logout() {
