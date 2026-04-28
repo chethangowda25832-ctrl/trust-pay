@@ -99,16 +99,91 @@
 
 /* ── SCAN PAGE ─────────────────────────────────────────────── */
 .scan-body { padding:1.2rem; text-align:center; }
-.scan-frame { width:240px; height:240px; margin:1.5rem auto; border-radius:20px; background:var(--bg2); border:2px solid var(--accent); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; }
-.scan-corners::before,.scan-corners::after { content:""; position:absolute; width:28px; height:28px; border-color:var(--accent2); border-style:solid; }
-.scan-corners::before { top:10px; left:10px; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
-.scan-corners::after { bottom:10px; right:10px; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
-.scan-line { position:absolute; width:80%; height:2px; background:linear-gradient(90deg,transparent,var(--accent2),transparent); animation:scanAnim 2s ease-in-out infinite; }
-@keyframes scanAnim { 0%,100%{top:20%;} 50%{top:80%;} }
-.scan-qr-icon { font-size:4.5rem; opacity:.3; }
-.scan-label { font-size:.88rem; color:var(--text2); margin-bottom:1.5rem; }
-.scan-divider { display:flex; align-items:center; gap:1rem; margin:1.2rem 0; color:var(--text3); font-size:.82rem; }
-.scan-divider::before,.scan-divider::after { content:""; flex:1; height:1px; background:var(--border); }
+
+/* ── Cyber Scanner Frame ─────────────────────────────────── */
+.scan-frame {
+  width: 280px;
+  height: 280px;
+  margin: 1rem auto 1.2rem;
+  border-radius: 22px;
+  background: radial-gradient(ellipse at center, #071428 0%, #020817 100%);
+  border: 2px solid rgba(0,212,255,0.7);
+  box-shadow:
+    0 0 0 1px rgba(0,212,255,0.15),
+    0 0 20px rgba(0,212,255,0.25),
+    0 0 60px rgba(0,212,255,0.1),
+    inset 0 0 30px rgba(0,212,255,0.05);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  animation: framePulse 3s ease-in-out infinite;
+}
+@keyframes framePulse {
+  0%,100% { box-shadow: 0 0 0 1px rgba(0,212,255,0.15), 0 0 20px rgba(0,212,255,0.25), 0 0 60px rgba(0,212,255,0.1), inset 0 0 30px rgba(0,212,255,0.05); }
+  50%      { box-shadow: 0 0 0 1px rgba(0,212,255,0.3),  0 0 30px rgba(0,212,255,0.45), 0 0 80px rgba(0,212,255,0.2), inset 0 0 40px rgba(0,212,255,0.08); }
+}
+
+/* 4 corner brackets */
+.scan-frame::before,
+.scan-frame::after,
+.scan-corners::before,
+.scan-corners::after {
+  content: "";
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-color: #00d4ff;
+  border-style: solid;
+  filter: drop-shadow(0 0 4px rgba(0,212,255,0.8));
+}
+/* Top-left */
+.scan-frame::before  { top:12px;  left:12px;  border-width:3px 0 0 3px; border-radius:6px 0 0 0; }
+/* Bottom-right */
+.scan-frame::after   { bottom:12px; right:12px; border-width:0 3px 3px 0; border-radius:0 0 6px 0; }
+/* Top-right */
+.scan-corners::before { top:12px;  right:12px; border-width:3px 3px 0 0; border-radius:0 6px 0 0; }
+/* Bottom-left */
+.scan-corners::after  { bottom:12px; left:12px; border-width:0 0 3px 3px; border-radius:0 0 0 6px; }
+
+/* Scanning line */
+.scan-line {
+  position: absolute;
+  left: 8%;
+  width: 84%;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(0,212,255,0.3) 15%,
+    rgba(0,212,255,1) 50%,
+    rgba(0,212,255,0.3) 85%,
+    transparent 100%);
+  box-shadow: 0 0 8px rgba(0,212,255,0.9), 0 0 20px rgba(0,212,255,0.4);
+  animation: scanAnim 2.2s ease-in-out infinite;
+  border-radius: 99px;
+}
+@keyframes scanAnim {
+  0%   { top: 14%; opacity: 0.6; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 82%; opacity: 0.6; }
+}
+
+/* QR icon placeholder */
+.scan-qr-icon {
+  font-size: 3.5rem;
+  opacity: 0.18;
+  filter: drop-shadow(0 0 6px rgba(0,212,255,0.3));
+}
+
+/* Scan label */
+.scan-label { font-size:.88rem; color:var(--text2); margin-bottom:1rem; letter-spacing:.5px; }
+
+/* Divider */
+.scan-divider { display:flex; align-items:center; gap:1rem; margin:1rem 0; color:var(--text3); font-size:.78rem; letter-spacing:1px; }
+.scan-divider::before,.scan-divider::after { content:""; flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(0,212,255,0.2),transparent); }
+
 .scan-manual { width:100%; }
 
 /* ── PROFILE PAGE ──────────────────────────────────────────── */
@@ -177,7 +252,36 @@
 
 /* Scan frame override for video */
 .scan-frame { position:relative; overflow:hidden; }
-#scan-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+#scan-placeholder {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: .6rem;
+  background: transparent;
+}
+#scan-placeholder p {
+  font-size: .82rem;
+  color: rgba(0,212,255,0.5);
+  letter-spacing: 1px;
+  font-family: 'Courier New', monospace;
+}
+
+/* B&W theme scan frame */
+body.theme-bw .scan-frame {
+  border-color: rgba(255,255,255,0.6) !important;
+  box-shadow: 0 0 20px rgba(255,255,255,0.15), inset 0 0 20px rgba(255,255,255,0.03) !important;
+  animation: none !important;
+}
+body.theme-bw .scan-frame::before, body.theme-bw .scan-frame::after,
+body.theme-bw .scan-corners::before, body.theme-bw .scan-corners::after {
+  border-color: #fff !important;
+  filter: drop-shadow(0 0 3px rgba(255,255,255,0.6)) !important;
+}
+body.theme-bw .scan-line {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), #fff, rgba(255,255,255,0.3), transparent) !important;
+  box-shadow: 0 0 8px rgba(255,255,255,0.7) !important;
+}
+body.theme-bw #scan-placeholder p { color: rgba(255,255,255,0.4) !important; }
 
 /* B&W theme overrides */
 body.theme-bw .scan-tab { border-color:rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:#aaa; }

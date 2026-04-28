@@ -40,8 +40,8 @@ function buildScan() {
           style="width:100%;height:100%;object-fit:cover;border-radius:18px;display:none"></video>
         <canvas id="scan-canvas" style="display:none"></canvas>
         <div id="scan-placeholder" style="display:flex;flex-direction:column;align-items:center;gap:.8rem">
-          <div style="font-size:4rem;opacity:.3">⊞</div>
-          <p style="font-size:.8rem;color:var(--text3)">Tap Start to open camera</p>
+          <div style="font-size:3.5rem;opacity:.18;filter:drop-shadow(0 0 6px rgba(0,212,255,0.3))">⊞</div>
+          <p style="font-size:.82rem;color:rgba(0,212,255,0.5);letter-spacing:1px;font-family:'Courier New',monospace">Tap Start to open camera</p>
         </div>
       </div>
 
