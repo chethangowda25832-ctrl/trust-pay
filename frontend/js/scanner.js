@@ -176,22 +176,24 @@ function simulateScan(upi, amount, note) {
 /* ── Camera scanner ────────────────────────────────────────── */
 async function startCamera() {
   const status = document.getElementById('scan-status');
-  if (status) status.textContent = 'Requesting camera access...';
 
-  // Check if HTTPS or localhost
-  const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-
-  if (!isSecure) {
-    if (status) status.innerHTML = '⚠️ Camera needs HTTPS. <strong>Use Upload QR</strong> or tap a demo QR below.';
-    showToast('Camera needs HTTPS. Use Upload QR instead.', 'error');
-    return;
-  }
-
+  // Check for camera API support
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    // HTTP workaround: try to access via chrome flags message
+    if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      if (status) status.innerHTML =
+        '⚠️ Camera blocked on HTTP.<br>' +
+        '<strong>Fix:</strong> On Chrome, go to <code>chrome://flags/#unsafely-treat-insecure-origin-as-secure</code> ' +
+        'and add <code>http://' + location.hostname + ':' + location.port + '</code> then relaunch Chrome.<br>' +
+        'Or use <strong>🖼 Upload QR</strong> below.';
+      showToast('Camera needs HTTPS. See instructions below.', 'error');
+      return;
+    }
     if (status) status.textContent = '❌ Camera not supported on this browser.';
-    showToast('Camera not supported. Use Upload QR.', 'error');
     return;
   }
+
+  if (status) status.textContent = '📷 Opening camera...';
 
   try {
     const video = document.getElementById('scan-video');
@@ -208,15 +210,22 @@ async function startCamera() {
     if (placeholder) placeholder.style.display = 'none';
     if (startBtn) startBtn.style.display = 'none';
     if (stopBtn)  stopBtn.style.display  = 'block';
-    if (status)   status.textContent = '🔍 Scanning for QR code...';
+    if (status)   status.textContent = '🔍 Scanning... point at a QR code';
 
     loadJsQR(() => startQRDetection(video));
   } catch (err) {
-    const msg = err.name === 'NotAllowedError'
-      ? '❌ Camera permission denied. Allow camera in browser settings.'
-      : '❌ Camera error: ' + err.message;
-    if (status) status.textContent = msg;
-    showToast('Camera error. Use Upload QR instead.', 'error');
+    let msg = '❌ Camera error.';
+    if (err.name === 'NotAllowedError') {
+      msg = '❌ Camera permission denied.<br>Allow camera access in your browser settings, then try again.';
+    } else if (err.name === 'NotFoundError') {
+      msg = '❌ No camera found on this device.';
+    } else if (err.name === 'NotReadableError') {
+      msg = '❌ Camera is in use by another app.';
+    } else if (location.protocol === 'http:') {
+      msg = '⚠️ Camera requires HTTPS.<br>Use <strong>🖼 Upload QR</strong> or tap a Demo QR below.';
+    }
+    if (status) status.innerHTML = msg;
+    showToast('Camera unavailable. Use Upload QR.', 'error');
   }
 }
 

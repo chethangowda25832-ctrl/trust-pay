@@ -432,4 +432,27 @@ def change_pin():
     return jsonify({'status':'ok','message':'PIN changed successfully'})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True, port=5000)
+    import os, ssl
+    cert = os.path.join(os.path.dirname(__file__), 'cert.pem')
+    key  = os.path.join(os.path.dirname(__file__), 'key.pem')
+    # Generate self-signed cert if not present
+    if not os.path.exists(cert):
+        try:
+            import subprocess
+            subprocess.run([
+                'openssl', 'req', '-x509', '-newkey', 'rsa:2048',
+                '-keyout', key, '-out', cert,
+                '-days', '365', '-nodes',
+                '-subj', '/CN=trustpay'
+            ], check=True, capture_output=True)
+            print('✅ SSL cert generated')
+        except Exception as e:
+            print(f'⚠️  Could not generate SSL cert: {e}')
+            print('   Running on HTTP (camera will not work on phone)')
+            app.run(host='0.0.0.0', debug=True, port=5000)
+            exit()
+    print('🔒 Running HTTPS on https://0.0.0.0:5000')
+    print('   Open on phone: https://<your-ip>:5000')
+    print('   Accept the self-signed cert warning in browser')
+    app.run(host='0.0.0.0', debug=True, port=5000,
+            ssl_context=(cert, key))

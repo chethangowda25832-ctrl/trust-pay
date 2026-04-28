@@ -485,15 +485,17 @@ async function verifyAndSend() {
   const txn = pendingTxn;
   pendingTxn = null; pinBuffer = '';
   try {
+    // risk_score lives directly on txn.risk (the full analyze response)
+    const riskScore = txn.risk ? (txn.risk.risk_score || txn.risk.fraud_probability || 0) : 0;
     const r = await fetch(API+'/send', {method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({sender_id: currentUser.id, upi_id: txn.upi, amount: txn.amount, note: txn.note, risk_score: txn.risk.risk_score})});
+      body: JSON.stringify({sender_id: currentUser.id, upi_id: txn.upi, amount: txn.amount, note: txn.note, risk_score: riskScore})});
     const d = await r.json();
     if(d.status === 'ok') {
       currentUser.balance -= txn.amount;
       showToast('✅ ' + d.message, 'success');
       showSuccessScreen(txn);
     } else { showToast(d.message || 'Payment failed','error'); }
-  } catch(e) { showToast('Payment failed','error'); }
+  } catch(e) { showToast('Payment failed. Check connection.','error'); console.error(e); }
 }
 
 function showSuccessScreen(txn) {
