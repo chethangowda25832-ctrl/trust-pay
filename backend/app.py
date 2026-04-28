@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3, os, json
 from datetime import datetime
-from risk_engine import analyze_transaction, get_user_history
+from risk_engine import analyze_transaction, get_user_history, get_behavior_analytics
 
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
@@ -205,6 +205,13 @@ def history():
         (user_id,)).fetchall()
     db.close()
     return jsonify({'history': [dict(r) for r in rows]})
+
+# ── Behavior Analytics ───────────────────────────────────────────────────────
+@app.route('/api/analytics', methods=['GET'])
+def analytics():
+    user_id = request.args.get('user_id', '1')
+    data = get_behavior_analytics(user_id)
+    return jsonify(data)
 
 # ── Dashboard ─────────────────────────────────────────────────────────────────
 @app.route('/api/dashboard', methods=['GET'])

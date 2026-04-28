@@ -820,52 +820,7 @@ function buildProfile() {
     </div>`;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   DASHBOARD PAGE
-═══════════════════════════════════════════════════════════ */
-async function buildDashboard() {
-  const pg = document.getElementById('page-dashboard');
-  pg.innerHTML = `
-    <div class="page-header">
-      <button class="back-btn" onclick="navTo('home')">←</button>
-      <h2>🛡️ Fraud Insights</h2>
-    </div>
-    <div class="dashboard-body">
-      <div class="stat-grid" id="dash-stats"><div class="loader-spin">Loading…</div></div>
-      <div class="chart-card"><h3>Risk Score Trend</h3><canvas id="riskChart"></canvas></div>
-      <div class="chart-card"><h3>Transaction Distribution</h3><canvas id="distChart"></canvas></div>
-    </div>`;
-  try {
-    const r = await fetch(API+'/dashboard?user_id='+currentUser.id);
-    const d = await r.json();
-    const s = d.stats;
-    document.getElementById('dash-stats').innerHTML = `
-      <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-val">${s.total}</div><div class="stat-label">Total</div></div>
-      <div class="stat-card safe"><div class="stat-icon">✅</div><div class="stat-val">${s.safe}</div><div class="stat-label">Safe</div></div>
-      <div class="stat-card medium"><div class="stat-icon">⚠️</div><div class="stat-val">${s.med_risk}</div><div class="stat-label">Medium Risk</div></div>
-      <div class="stat-card high"><div class="stat-icon">🚨</div><div class="stat-val">${s.high_risk}</div><div class="stat-label">High Risk</div></div>`;
-    const tc = '#9ca3af', gc = 'rgba(255,255,255,.06)';
-    if(riskChart) riskChart.destroy();
-    riskChart = new Chart(document.getElementById('riskChart'), {
-      type:'line',
-      data:{ labels: d.chart.map((_,i)=>'Txn '+(i+1)),
-        datasets:[{label:'Risk Score', data: d.chart.map(t=>Math.round(t.risk_score)),
-          borderColor:'#8b5cf6', backgroundColor:'rgba(139,92,246,.15)', fill:true, tension:.4,
-          pointBackgroundColor: d.chart.map(t=>t.risk_score>=70?'#ef4444':t.risk_score>=40?'#f59e0b':'#10b981'), pointRadius:5}]},
-      options:{responsive:true, plugins:{legend:{labels:{color:tc}}},
-        scales:{x:{ticks:{color:tc},grid:{color:gc}}, y:{ticks:{color:tc},grid:{color:gc},min:0,max:100}}}});
-    if(distChart) distChart.destroy();
-    distChart = new Chart(document.getElementById('distChart'), {
-      type:'doughnut',
-      data:{ labels:['Safe','Medium','High'],
-        datasets:[{data:[s.safe,s.med_risk,s.high_risk],
-          backgroundColor:['rgba(16,185,129,.7)','rgba(245,158,11,.7)','rgba(239,68,68,.7)'],
-          borderColor:['#10b981','#f59e0b','#ef4444'], borderWidth:2}]},
-      options:{responsive:true, plugins:{legend:{position:'bottom',labels:{color:tc}}}}});
-  } catch(e) {
-    document.getElementById('dash-stats').innerHTML = '<div style="color:var(--text3);padding:1rem">Could not load data</div>';
-  }
-}
+// buildDashboard is defined in dashboard.js (behavioral analytics)
 
 /* ═══════════════════════════════════════════════════════════
    INIT
