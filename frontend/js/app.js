@@ -583,38 +583,7 @@ function renderHistory(filter) {
   }).join('');
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SCAN PAGE
-═══════════════════════════════════════════════════════════ */
-function buildScan() {
-  const pg = document.getElementById('page-scan');
-  pg.innerHTML = `
-    <div class="page-header">
-      <button class="back-btn" onclick="navTo('home')">←</button>
-      <h2>Scan & Pay</h2>
-    </div>
-    <div class="scan-body">
-      <p class="scan-label">Point camera at a QR code to pay</p>
-      <div class="scan-frame">
-        <div class="scan-corners"></div>
-        <div class="scan-line"></div>
-        <div class="scan-qr-icon">⊞</div>
-      </div>
-      <p style="color:var(--text3);font-size:.8rem;margin-bottom:1.5rem">Camera access required for QR scanning</p>
-      <div class="scan-divider">OR</div>
-      <p style="color:var(--text2);font-size:.85rem;margin-bottom:.8rem;text-align:left">Enter UPI ID manually</p>
-      <div class="scan-manual">
-        <input type="text" id="scan-upi-input" placeholder="Enter UPI ID (e.g. name@upi)" style="margin-bottom:1rem"/>
-        <button class="btn-primary" onclick="scanManualPay()">Proceed to Pay</button>
-      </div>
-    </div>`;
-}
-
-function scanManualPay() {
-  const upi = document.getElementById('scan-upi-input').value.trim();
-  if(!upi) { showToast('Enter a UPI ID','error'); return; }
-  openSendTo(upi, '');
-}
+// buildScan is defined in scanner.js
 
 /* ═══════════════════════════════════════════════════════════
    REQUEST PAGE

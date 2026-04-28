@@ -152,3 +152,37 @@
 .chart-card { background:var(--bg2); border:1px solid var(--border); border-radius:14px; padding:1.2rem; margin-bottom:.9rem; }
 .chart-card h3 { font-size:.85rem; color:var(--text2); margin-bottom:.9rem; }
 .loader-spin { display:flex; justify-content:center; padding:2.5rem; color:var(--text2); }
+
+/* ── SCANNER PAGE ──────────────────────────────────────────── */
+.scan-tabs { display:flex; gap:.5rem; padding:.8rem 1.2rem; background:var(--bg2); border-bottom:1px solid rgba(0,212,255,0.1); }
+.scan-tab { flex:1; padding:.6rem; border-radius:10px; border:1px solid rgba(0,212,255,0.15); background:rgba(0,212,255,0.04); color:var(--text2); font-size:.82rem; font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit; }
+.scan-tab.active { background:rgba(0,212,255,0.15); border-color:rgba(0,212,255,0.5); color:var(--accent); box-shadow:0 0 12px rgba(0,212,255,0.15); }
+
+/* Demo QR grid */
+.demo-qr-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.7rem; margin-bottom:1.2rem; }
+.demo-qr-item { background:rgba(0,212,255,0.04); border:1px solid rgba(0,212,255,0.12); border-radius:14px; padding:.8rem .5rem; text-align:center; cursor:pointer; transition:all .2s; }
+.demo-qr-item:active { transform:scale(.95); background:rgba(0,212,255,0.1); border-color:rgba(0,212,255,0.4); }
+.demo-qr-risky { border-color:rgba(255,51,102,0.2) !important; background:rgba(255,51,102,0.04) !important; }
+.demo-qr-risky:active { background:rgba(255,51,102,0.1) !important; }
+.demo-qr-label { font-size:.7rem; font-weight:600; color:var(--text); margin-top:.4rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.demo-qr-amount { font-size:.68rem; color:var(--accent); margin-top:.1rem; }
+.demo-qr-warn { font-size:.62rem; color:var(--high); margin-top:.2rem; }
+
+/* My QR card */
+.my-qr-wrap { display:flex; flex-direction:column; align-items:center; }
+.my-qr-card { background:rgba(0,212,255,0.04); border:1px solid rgba(0,212,255,0.2); border-radius:20px; padding:1.5rem; text-align:center; width:100%; max-width:300px; box-shadow:0 0 30px rgba(0,212,255,0.08); }
+.my-qr-name { font-size:1.1rem; font-weight:700; color:var(--text); }
+.my-qr-upi { font-size:.78rem; color:var(--accent); margin-top:.2rem; letter-spacing:.5px; }
+.my-qr-amount-wrap { margin-top:.8rem; text-align:left; }
+
+/* Scan frame override for video */
+.scan-frame { position:relative; overflow:hidden; }
+#scan-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+
+/* B&W theme overrides */
+body.theme-bw .scan-tab { border-color:rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:#aaa; }
+body.theme-bw .scan-tab.active { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.4); color:#fff; }
+body.theme-bw .demo-qr-item { border-color:rgba(255,255,255,0.1); background:rgba(255,255,255,0.03); }
+body.theme-bw .demo-qr-amount { color:#fff; }
+body.theme-bw .my-qr-card { border-color:rgba(255,255,255,0.15); background:rgba(255,255,255,0.04); }
+body.theme-bw .my-qr-upi { color:#fff; }
